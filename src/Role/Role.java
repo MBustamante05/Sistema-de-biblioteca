@@ -1,5 +1,5 @@
 package Role;
 
 public abstract class Role {
-    public abstract  boolean canPerfom(Action action);
+    public abstract  boolean canPerform(Action action);
 }

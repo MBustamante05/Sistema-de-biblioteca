@@ -2,7 +2,7 @@ package Role;
 
 public class Admin extends Role {
     @Override
-    public boolean canPerfom(Action action) {
+    public boolean canPerform(Action action) {
         return true;
     }
 }

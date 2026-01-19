@@ -17,29 +17,43 @@ public class LibraryService {
 
     // Métodos Generales
     public void displayBooks() {
-        for (Book bk : books)
-            if (bk.isAvailable())
-                System.out.println(bk.toString());
+        boolean hasAvailableBooks = false;
+
+        System.out.println("\n--- LIBROS DISPONIBLES ---");
+        for (Book book : books) {
+            if (book.isAvailable()) {
+                System.out.println(book);
+                System.out.println("------------------------");
+                hasAvailableBooks = true;
+            }
+        }
+
+        if (!hasAvailableBooks) {
+            System.out.println("No hay libros disponibles en este momento.");
+        }
     }
 
-    public boolean displayBookById(int id) {
-        for (Book bk : books)
-            if (bk.getId() == id) {
-                System.out.println(bk.toString());
+    public boolean displayBookByTitle(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                System.out.println("\n" + book);
                 return true;
             }
+        }
 
-        System.out.println("Lo sentimos. No se encontró ningún libro con ese ID");
+        System.out.println("\n❌ No se encontró ningún libro con el título: " + title);
         return false;
     }
 
     // Métodos de Usuario
-    public void addBook(User user, Book book) {
+    public boolean addBook(User user, Book book) {
         if (user.can(Action.ADD_BOOK)) {
             books.add(book);
             System.out.println("Libro agregado correctamente!");
+            return true;
         }
         System.out.println("No fue posible agregar el libro. Parece que no eres administrador.");
+        return false;
     }
 
     public boolean removeBook(User user, int id) {
@@ -65,7 +79,7 @@ public class LibraryService {
         return false;
     }
 
-    public void loanBook(User user, int id) {
+    public boolean loanBook(User user, int id) {
         if (user.can(Action.LOAN_BOOK)) {
             for (Book book : books)
                 if (book.getId() == id && book.isAvailable()) {
@@ -73,9 +87,13 @@ public class LibraryService {
                     book.setAvailable(false);
                     loans.add(loan);
                     System.out.println("Préstamo exitoso!");
+                    return true;
                 }
             System.out.println("Este libro no está disponible");
+            return false;
         }
+        System.out.println("Parece que hubo un problema en el sistema.");
+        return false;
     }
 
     public void returnBook(User user, int id) {
@@ -90,8 +108,14 @@ public class LibraryService {
     }
 
     // Mostrar prestamos
-    public void displayLoans() {
+    public boolean displayLoans() {
+        if (loans.isEmpty()) {
+            System.out.println("No hay historial de préstamos");
+            return true;
+        }
         for (Loan ln : loans)
             System.out.println(ln.toString());
+
+        return false;
     }
 }
